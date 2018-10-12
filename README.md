@@ -5,3 +5,7 @@
 3) change the part of the files in the "CHANGE THIS SECTION" portion
 4) execute `./template_run` where "template" is replaced with your name
 
+# Bugs/Suggestions
+
+Please let me know on Slack or at tomsherman159@gmail.com if there are any bugs in these scripts or if there are missing features
+
