@@ -32,6 +32,6 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Total Runs: $SIZE"
-#batch --array=1-$SIZE $JOB_SCRIPT $R_SCRIPT $OUTPUT_DIR
+sbatch --array=1-$SIZE $JOB_SCRIPT $R_SCRIPT $OUTPUT_DIR
 
 ################################################################################
