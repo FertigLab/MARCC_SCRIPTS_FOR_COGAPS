@@ -1,0 +1,37 @@
+#!/bin/bash
+
+############################# CHANGE THIS SECTION ##############################
+
+OUTPUT_DIR="/path/to/your/output/directory"
+
+########################## DO NOT CHANGE THIS SECTION ##########################
+
+THIS_SCRIPT=$(readlink -f "$0")
+JOB_NAME=${THIS_SCRIPT::-4}
+R_SCRIPT=$JOB_NAME"_cogaps_R_script.R"
+JOB_SCRIPT=$JOB_NAME"_cogaps_job_script.R"
+
+if [ ! -f $R_SCRIPT ]; then
+    echo "Error: R script not found"
+    exit 1
+fi
+echo "Found R Script"
+echo $R_SCRIPT
+
+if [ ! -f $R_SCRIPT ]; then
+    echo "Error: Job Script not found"
+    exit 1
+fi
+echo "Found Job Script"
+echo $JOB_SCRIPT
+
+SIZE=$(Rscript $R_SCRIPT 1 0)
+if [ $? -ne 0 ]; then
+    echo "There was an error in your R script"
+    exit 1
+fi
+
+echo "Total Runs: $SIZE"
+#batch --array=1-$SIZE $JOB_SCRIPT $R_SCRIPT $OUTPUT_DIR
+
+################################################################################
