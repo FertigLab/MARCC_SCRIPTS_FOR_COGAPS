@@ -1,0 +1,95 @@
+#!/bin/bash
+
+# use this function for throwing an error
+exit_with_error()
+{
+    echo "Error: $1"
+    echo "use ./run --help for more information about using this script"
+    exit 1
+}
+
+# display help message
+if [ "$1" == "--help" ]; then
+    echo
+    echo "  This script manages the job submission process for CoGAPS on MARCC"
+    echo "  call this script like: ./run output_directory run_id"
+    echo "  For example, ./run my_single_cell_analysis 3"
+    echo "  will create a directory called my_single_cell_analysis/run_3"
+    echo "  inside this directory will be all output and logs from the CoGAPS run"
+    echo
+    exit 1
+fi
+
+# verify correct number of arguments are given
+if [ $# -ne 2 ]; then
+    exit_with_error "must specify output directory and run id"
+fi
+
+# create output directory if needed, notify user
+TOP_LEVEL_DIR=${1%/}
+mkdir -p $TOP_LEVEL_DIR
+if [ ! -d "$TOP_LEVEL_DIR" ]; then
+    echo "creating directory \"$TOP_LEVEL_DIR\""
+fi
+echo "using output directory: \"$TOP_LEVEL_DIR\""
+
+# check if this run id is already in use
+if [ -d "$TOP_LEVEL_DIR/run_$2" ]; then
+    exit_with_error "run_$2 already exists, use a different run id"
+fi
+
+# create the run directory
+mkdir $TOP_LEVEL_DIR/run_$2
+echo "storing results in \"$TOP_LEVEL_DIR/run_$2\""
+OUTPUT_DIR=$TOP_LEVEL_DIR/run_$2
+
+# get name for R script and job script
+R_SCRIPT="scripts/R_script.R"
+JOB_SCRIPT="scripts/job_script.sh"
+
+# check if R script exists
+if [ ! -f $R_SCRIPT ]; then
+    exit_with_error "R script not found, expecting it in scripts/R_script.R"
+fi
+
+echo "Found R Script"
+echo $R_SCRIPT
+
+# check if job script exists
+if [ ! -f $R_SCRIPT ]; then
+    exit_with_error "Job Script not found, expecting it in scripts/job_script.sh"
+fi
+
+echo "Found Job Script"
+echo $JOB_SCRIPT
+
+# load R module and run R script to get the size of the run
+module load R
+SIZE=$(Rscript $R_SCRIPT 1 0)
+if [ $? -ne 0 ]; then
+    exit_with_error "R script failed to run"
+fi
+echo "Total Runs: $SIZE"
+
+# create log directory
+mkdir -p $OUTPUT_DIR/logs
+
+# copy the scripts to the run directory, use these scripts to run
+mkdir -p $OUTPUT_DIR/scripts
+cp $R_SCRIPT $OUTPUT_DIR/scripts
+cp $JOB_SCRIPT $OUTPUT_DIR/scripts 
+
+# get absolute paths
+FINAL_OUTPUT_DIR=$(pwd)/$OUTPUT_DIR
+FINAL_R_SCRIPT=$FINAL_OUTPUT_DIR/scripts/R_script.R
+FINAL_JOB_SCRIPT=$FINAL_OUTPUT_DIR/scripts/job_script.sh
+
+# print status to user
+echo "Executing job script: $FINAL_JOB_SCRIPT"
+echo "Using R script: $FINAL_R_SCRIPT"
+echo "Dumping results in: $FINAL_OUTPUT_DIR"
+
+# submit sbatch array
+sbatch -o $FINAL_OUTPUT_DIR/logs/slurm-%A_%a.out --array=1-$SIZE $FINAL_JOB_SCRIPT $FINAL_R_SCRIPT $FINAL_OUTPUT_DIR
+
+################################################################################
