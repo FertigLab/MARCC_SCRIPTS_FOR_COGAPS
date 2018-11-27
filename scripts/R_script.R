@@ -14,11 +14,11 @@
 #### STANDARD PARAMETERS - only change values, not names of the variables
 
 # name of your simulation (used in name of save file)
-simulationName <- "bm_retina"
+simulationName <- "example_name"
 
 # data can be any format CoGAPS accepts (see vignette/reference manual)
 # this should be an absolute path
-data <- "/home-4/tsherma4@jhu.edu/work/RetinaReruns/RetinaHighVarSubset.mtx"
+data <- "/path/to/data.mtx"
 
 # RANGED PARAMETER
 # number of patterns CoGAPS will run over
@@ -36,10 +36,10 @@ nIterations <- 50000
 seed <- 42
 
 # set to true if running on single-cell data
-singleCell <- TRUE
+singleCell <- FALSE
 
 # set to true if data is greater than 80% sparse
-sparseOptimization <- TRUE
+sparseOptimization <- FALSE
 
 # number of threads to run CoGAPS on (only when using standard CoGAPS)
 nThreads <- 1 # set --cpus-per-task equal to this
@@ -47,27 +47,21 @@ nThreads <- 1 # set --cpus-per-task equal to this
 # how often (in number of iterations) to print status messages
 outputFrequency <- 1000
 
+# option for transposing your data if samples are in the rows
+transposeData <- FALSE
+
 #### DISTRIBUTED PARAMETERS - set these if you're running GWCoGAPS or scCoGAPS
 
 # set to true if running genome-wide CoGAPS
 use_GWCoGAPS <- FALSE
 
 # set to true if running single-cell CoGAPS
-use_scCoGAPS <- TRUE
+use_scCoGAPS <- FALSE
 
 # RANGED PARAMETER
 # number of subsets to break your data into, set --ntasks-per-node equal to this
 # nSets_range <- c(4, 8, 12)
 nSets <- 24
-
-#### EXTRA PARAMETERS - these are some extra parameters that aren't critical
-
-# option for transposing your data if samples are in the rows
-transposeData <- FALSE
-
-# uncertainty is either a matrix or a file name depending on the format of data
-# leave it NULL to use the default value for uncertainty (recommended)
-uncertainty <- NULL
 
 ########################## DO NOT CHANGE THIS SECTION ##########################
 
@@ -154,8 +148,7 @@ if (!is.na(returnSize)) {
     gapsResult <- CoGAPS(data=data, params=params,
         nThreads=nThreads,
         outputFrequency=outputFrequency,
-        transposeData=transposeData,
-        uncertainty=uncertainty
+        transposeData=transposeData
     )
 
     save(gapsResult, file=paste(simulationName, "_result.RData", sep=""))
