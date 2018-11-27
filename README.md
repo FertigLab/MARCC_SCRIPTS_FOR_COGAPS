@@ -4,7 +4,7 @@ This repository contains a template for running multiple CoGAPS jobs on MARCC.
 
 ## Setup
 
-1) clone repository
+1) clone repository (change `project_name` to your project name)
 
 ```
 git clone https://github.com/FertigLab/MARCC_SCRIPTS_FOR_COGAPS.git
@@ -59,7 +59,7 @@ After modifying `R_script.R` and `job_script.sh` you might set off a few runs li
 
 `./run MySingleCellAnalysis 1`
 
- - modify parameters again -
+modify parameters again
 
 `./run MySingleCellAnalysis 2`
 
