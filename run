@@ -25,6 +25,9 @@ if [ $# -ne 2 ]; then
     exit_with_error "must specify output directory and run id"
 fi
 
+# load R first so that status messages are cleaner
+module load R
+
 # create output directory if needed, notify user
 TOP_LEVEL_DIR=${1%/}
 mkdir -p $TOP_LEVEL_DIR
@@ -63,8 +66,7 @@ fi
 echo "Found Job Script"
 echo $JOB_SCRIPT
 
-# load R module and run R script to get the size of the run
-module load R
+# run R script to get the size of the run
 SIZE=$(Rscript $R_SCRIPT 1 0)
 if [ $? -ne 0 ]; then
     exit_with_error "R script failed to run"
@@ -77,7 +79,7 @@ mkdir -p $OUTPUT_DIR/logs
 # copy the scripts to the run directory, use these scripts to run
 mkdir -p $OUTPUT_DIR/scripts
 cp $R_SCRIPT $OUTPUT_DIR/scripts
-cp $JOB_SCRIPT $OUTPUT_DIR/scripts 
+cp $JOB_SCRIPT $OUTPUT_DIR/scripts
 
 # get absolute paths
 FINAL_OUTPUT_DIR=$(pwd)/$OUTPUT_DIR
@@ -91,5 +93,3 @@ echo "Dumping results in: $FINAL_OUTPUT_DIR"
 
 # submit sbatch array
 sbatch -o $FINAL_OUTPUT_DIR/logs/slurm-%A_%a.out --array=1-$SIZE $FINAL_JOB_SCRIPT $FINAL_R_SCRIPT $FINAL_OUTPUT_DIR
-
-################################################################################
