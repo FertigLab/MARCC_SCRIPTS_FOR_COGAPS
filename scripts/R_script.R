@@ -151,7 +151,7 @@ if (!is.na(returnSize)) {
         transposeData=transposeData
     )
 
-    save(gapsResult, file=paste(simulationName, "_result.RData", sep=""))
+    save(gapsResult, file=paste(simulationName, "_result_", arrayNum, ".RData", sep=""))
 }
 
 ################################################################################
