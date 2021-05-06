@@ -45,7 +45,8 @@ Now that you have the directory structure set up, you can use the run script to 
 
 1) modify the parameter values `R_script.R` for your specific case
 2) modify the job parameters (i.e. #SBATCH ...) in `job_script.sh`
-3) execute `./run run_name run_id`
+3) modify the modules in `job_script.sh` to specify version of R to use
+4) execute `./run run_name run_id`
 
 This will copy over the scripts and run everything in a new directory called `run_name/run_id`. With these scripts you can quickly fire off multiple runs and all information (including log files) will be stored in a separate, well-structured directory.
 
