@@ -64,6 +64,16 @@ use_scCoGAPS <- FALSE
 nSets <- 24
 
 ########################## DO NOT CHANGE THIS SECTION ##########################
+# Install BiocManager 
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+# Install CoGAPS if it is not installed 
+if(!"CoGAPS" %in% installed.packages()){
+    BiocManager::install("CoGAPS")
+}
+
+# Load CoGAPS
+library(CoGAPS)
 
 # check version 0f CoGAPS
 if (packageVersion("CoGAPS") < "3.2.0")
