@@ -23,6 +23,11 @@
 #SBATCH --exclusive
 
 # load all modules you need for this job
+# Ensure that gcc is the module loaded NOT intel
+# This will ensure that you can install CoGAPS and dependencies
+module load gcc/5.0.0
+# User can specify version of R
+# ie R/4.0.2
 module load R
 
 ########################## DO NOT CHANGE THIS SECTION ##########################
